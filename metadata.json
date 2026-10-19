@@ -1,0 +1,6 @@
+{
+  "name": "منصة ذكاء وتقييم كبار العملاء المصرفيين - PCIS",
+  "description": "منصة استراتيجية مصرفية متكاملة لتقييم وتصنيف كبار العملاء (شركات وأفراد) وتحديد أولويات الرعاية وتخصيص الميزانيات بدقة وحتمية قابلة للتدقيق.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
