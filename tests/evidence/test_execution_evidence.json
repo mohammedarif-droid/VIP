@@ -1,0 +1,131 @@
+{
+  "suite_name": "PCIS VIP Pipeline & Defect Verification Suite",
+  "bank_name": "CAC Bank Yemen",
+  "department": "VIP Banking & Large Corporate Services",
+  "execution_timestamp": "2026-10-19T09:52:50Z",
+  "total_tests": 26,
+  "passed_tests": 26,
+  "failed_tests": 0,
+  "status": "APPROVED_100_PERCENT",
+  "pipeline_verification": {
+    "customer_code": "VIP-CORP-101",
+    "evaluation_period_months": 18,
+    "total_procurement_usd": 910000.0,
+    "total_payments_usd": 910000.0,
+    "closing_outstanding_usd": 3000.0,
+    "total_freight_usd": 62000.0,
+    "total_customs_usd": 40700.0,
+    "delivery_rate_percent": 83.33,
+    "avg_delivery_days": 32.33
+  },
+  "pipeline_tests_executed": [
+    {
+      "id": "PIPE-01",
+      "name": "Normal pipeline",
+      "category": "End-to-End Execution",
+      "defect_tested": "Stage progression breakdown",
+      "expected_result": "Transaction moves through every stage successfully",
+      "actual_result": "All 18 monthly cycles processed without error",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-02",
+      "name": "Missing document",
+      "category": "Document Integrity",
+      "defect_tested": "Missing PI or B/L entry",
+      "expected_result": "Pipeline flags missing document and prevents invalid progression",
+      "actual_result": "PipelineStageError raised and transaction blocked",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-03",
+      "name": "Duplicate event",
+      "category": "Idempotency",
+      "defect_tested": "Reprocessing duplicate transaction event",
+      "expected_result": "Reprocessing event does not create duplicate payments or records",
+      "actual_result": "Duplicate blocked, balance intact, 1 item stored",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-04",
+      "name": "Failed stage & Retry",
+      "category": "Fault Recovery",
+      "defect_tested": "Stage error occurrence and recovery",
+      "expected_result": "Error is logged and the transaction can be safely retried",
+      "actual_result": "FAILED_STAGE_ERROR logged to audit trail, safe retry succeeded",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-05",
+      "name": "Status mismatch",
+      "category": "State Consistency",
+      "defect_tested": "Marking Delivered with delivery_days <= 0",
+      "expected_result": "A shipment cannot be marked delivered without required confirmation",
+      "actual_result": "PipelineStageError raised: Status mismatch",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-06",
+      "name": "Data consistency",
+      "category": "Cross-Stage Linkage",
+      "defect_tested": "Mismatched references between PI, PO, LC, B/L",
+      "expected_result": "PI, PO, LC, B/L, customs, and delivery records remain correctly linked",
+      "actual_result": "All identifiers verified consistent across cycles",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-07",
+      "name": "Financial reconciliation",
+      "category": "Ledger Math",
+      "defect_tested": "Cumulative outstanding discrepancy",
+      "expected_result": "Customer invoices, receipts, and outstanding balances match ledger",
+      "actual_result": "Formula matches 18/18 monthly steps and final $3,000 balance",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-08",
+      "name": "Pipeline recovery",
+      "category": "Resilience",
+      "defect_tested": "Mid-stream processing interruption",
+      "expected_result": "Interrupted processing resumes without losing or duplicating transactions",
+      "actual_result": "Resumed from M10 to M18 without data loss or duplication",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-09",
+      "name": "Unauthorized transition",
+      "category": "Security & RBAC",
+      "defect_tested": "Bypassing intermediate stages or unauthorized role transition",
+      "expected_result": "Users cannot bypass restricted stages or act without authority",
+      "actual_result": "Stage skipping and guest roles blocked with security exceptions",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-10",
+      "name": "Audit trail",
+      "category": "Compliance",
+      "defect_tested": "Untracked state modification",
+      "expected_result": "Each status change records relevant user, time, and action",
+      "actual_result": "Immutable audit entries generated for every event",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-11",
+      "name": "Negative amount defect",
+      "category": "Data Validation",
+      "defect_tested": "Negative invoice or payment injections",
+      "expected_result": "Negative procurement values or payments must be rejected",
+      "actual_result": "Rejected before modifying ledger",
+      "status": "PASSED"
+    },
+    {
+      "id": "PIPE-12",
+      "name": "Invalid LC status defect",
+      "category": "Domain Validation",
+      "defect_tested": "Non-banking LC status strings",
+      "expected_result": "Pipeline must reject non-banking LC statuses",
+      "actual_result": "Rejected against banking enum dictionary",
+      "status": "PASSED"
+    }
+  ]
+}
